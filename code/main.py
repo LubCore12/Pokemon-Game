@@ -23,10 +23,9 @@ class Game:
 
         self.overworld_frames = {
             'water': import_folder('graphics', 'tilesets', 'water'),
-            'coast': coast_importer(24, 12, 'graphics', 'tilesets', 'coast')
+            'coast': coast_importer(24, 12, 'graphics', 'tilesets', 'coast'),
+            'characters': all_character_import('graphics', 'characters'),
         }
-
-        print(self.overworld_frames['coast'])
 
     def setup(self, tmx_map, player_start_pos):
         for layer in ['Terrain', 'Terrain Top']:
@@ -38,7 +37,23 @@ class Game:
 
         for entity in tmx_map.get_layer_by_name('Entities'):
             if entity.name == 'Player' and entity.properties['pos'] == player_start_pos:
-                self.player = Player((entity.x, entity.y), self.all_sprites)
+                direction = entity.properties['direction']
+                self.player = Player(
+                    frames = self.overworld_frames['characters']['player'],
+                    pos = (entity.x, entity.y),
+                    groups = self.all_sprites,
+                    facing_direction = direction
+                )
+
+            if entity.name == 'Character':
+                direction = entity.properties['direction']
+                graphic = entity.properties['graphic']
+                Character(
+                    frames = self.overworld_frames['characters'][graphic],
+                    pos = (entity.x, entity.y),
+                    groups = self.all_sprites,
+                    facing_direction = direction
+                )
 
         for obj in tmx_map.get_layer_by_name('Water'):
             for x in range(int(obj.x), int(obj.x + obj.width), TILE_SIZE):
