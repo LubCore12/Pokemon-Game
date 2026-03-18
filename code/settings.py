@@ -58,10 +58,3 @@ BATTLE_CHOICES = {
 		'switch': {'pos' : pygame.Vector2(30, 40), 'icon': 'arrows'}}
 }
 
-
-from timer import *
-from game_data import *
-from support import *
-from sprites import *
-from entities import *
-from groups import *
