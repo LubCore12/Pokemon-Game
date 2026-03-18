@@ -1,7 +1,7 @@
 import pygame
 from os.path import join
 from os import walk
-from pytmx.util_pygame import load_pygame
+from pytmx import load_pygame
 
 WINDOW_WIDTH, WINDOW_HEIGHT = 1280, 720
 TILE_SIZE = 64 
@@ -57,3 +57,11 @@ BATTLE_CHOICES = {
 		'defend': {'pos' : pygame.Vector2(40, 0), 'icon': 'shield'},
 		'switch': {'pos' : pygame.Vector2(30, 40), 'icon': 'arrows'}}
 }
+
+
+from timer import *
+from game_data import *
+from support import *
+from sprites import *
+from entities import *
+from groups import *
