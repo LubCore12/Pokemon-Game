@@ -21,12 +21,17 @@ class Game:
             'hospital': load_pygame(join('data', 'maps', 'hospital.tmx'))
         }
 
-    def setup(self, tmx_map, player_start_pos):
-        for x, y, image in tmx_map.get_layer_by_name('Terrain').tiles():
-            Sprite(image, (x * TILE_SIZE, y * TILE_SIZE), self.all_sprites)
+        self.overworld_frames = {
+            'water': import_folder('graphics', 'tilesets', 'water'),
+            'coast': coast_importer(24, 12, 'graphics', 'tilesets', 'coast')
+        }
 
-        for x, y, image in tmx_map.get_layer_by_name('Terrain Top').tiles():
-            Sprite(image, (x * TILE_SIZE, y * TILE_SIZE), self.all_sprites)
+        print(self.overworld_frames['coast'])
+
+    def setup(self, tmx_map, player_start_pos):
+        for layer in ['Terrain', 'Terrain Top']:
+            for x, y, image in tmx_map.get_layer_by_name(layer).tiles():
+                Sprite(image, (x * TILE_SIZE, y * TILE_SIZE), self.all_sprites)
 
         for obj in tmx_map.get_layer_by_name('Objects'):
             Sprite(obj.image, (obj.x, obj.y), self.all_sprites)
@@ -34,6 +39,16 @@ class Game:
         for entity in tmx_map.get_layer_by_name('Entities'):
             if entity.name == 'Player' and entity.properties['pos'] == player_start_pos:
                 self.player = Player((entity.x, entity.y), self.all_sprites)
+
+        for obj in tmx_map.get_layer_by_name('Water'):
+            for x in range(int(obj.x), int(obj.x + obj.width), TILE_SIZE):
+                for y in range(int(obj.y), int(obj.y + obj.height), TILE_SIZE):
+                    AnimatedSprite(self.overworld_frames['water'], (x, y), self.all_sprites)
+
+        for obj in tmx_map.get_layer_by_name('Coast'):
+            side = obj.properties['side']
+            terrain = obj.properties['terrain']
+            AnimatedSprite(self.overworld_frames['coast'][terrain][side], (obj.x, obj.y), self.all_sprites)
 
     def run(self):
         while self.running:
