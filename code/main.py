@@ -42,7 +42,7 @@ class Game:
         for obj in tmx_map.get_layer_by_name('Coast'):
             side = obj.properties['side']
             terrain = obj.properties['terrain']
-            AnimatedSprite(self.overworld_frames['coast'][terrain][side], (obj.x, obj.y), self.all_sprites, WORLD_LAYERS['water'])
+            AnimatedSprite(self.overworld_frames['coast'][terrain][side], (obj.x, obj.y), self.all_sprites, WORLD_LAYERS['coast'])
 
         for layer in ['Terrain', 'Terrain Top']:
             for x, y, image in tmx_map.get_layer_by_name(layer).tiles():

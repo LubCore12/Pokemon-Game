@@ -17,7 +17,7 @@ class AllSprites(pygame.sprite.Group):
         self.offset.x = -(target_x - WINDOW_WIDTH / 2)
         self.offset.y = -(target_y - WINDOW_HEIGHT / 2)
 
-        bg_sprtes = [sprite for sprite in self if sprite.z < WORLD_LAYERS['main']]
+        bg_sprtes = sorted([sprite for sprite in self if sprite.z < WORLD_LAYERS['main']], key=lambda sprite: sprite.z)
         main_sprites = sorted([sprite for sprite in self if sprite.z == WORLD_LAYERS['main']], key=lambda sprite: sprite.y_sort)
         fg_sprtes = [sprite for sprite in self if sprite.z > WORLD_LAYERS['main']]
 

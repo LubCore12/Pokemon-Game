@@ -27,9 +27,10 @@ COLORS = {
 WORLD_LAYERS = {
 	'water': 0,
 	'bg': 1,
-	'shadow': 2,
-	'main': 3,
-	'top': 4
+	'coast': 2,
+	'shadow': 3,
+	'main': 4,
+	'top': 5
 }
 
 BATTLE_POSITIONS = {

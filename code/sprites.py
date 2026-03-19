@@ -2,7 +2,7 @@ from settings import *
 
 
 class Sprite(pygame.sprite.Sprite):
-    def __init__(self, surf, pos, groups, z = WORLD_LAYERS['main'], y_sort = 0):
+    def __init__(self, surf, pos, groups, z = WORLD_LAYERS['main']):
         super().__init__(groups)
 
         self.image = surf
