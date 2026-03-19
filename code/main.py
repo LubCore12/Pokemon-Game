@@ -4,6 +4,8 @@ from support import *
 from sprites import *
 from entities import *
 from groups import *
+from dialog import *
+from game_data import *
 
 
 class Game:
@@ -17,9 +19,12 @@ class Game:
 
         self.all_sprites = AllSprites()
         self.collision_sprites = pygame.sprite.Group()
+        self.character_sprites = pygame.sprite.Group()
 
         self.import_assets()
         self.setup(self.tmx_maps['world'], 'house')
+
+        self.dialog_tree = None
 
     def import_assets(self):
         self.tmx_maps = {
@@ -31,6 +36,10 @@ class Game:
             'water': import_folder('graphics', 'tilesets', 'water'),
             'coast': coast_importer(24, 12, 'graphics', 'tilesets', 'coast'),
             'characters': all_character_import('graphics', 'characters'),
+        }
+
+        self.fonts = {
+            'dialog': pygame.font.Font(join('graphics', 'fonts', 'PixeloidSans.ttf'), 30),
         }
 
     def setup(self, tmx_map, player_start_pos):
@@ -74,12 +83,38 @@ class Game:
             if entity.name == 'Character':
                 direction = entity.properties['direction']
                 graphic = entity.properties['graphic']
+                data = entity.properties['character_id']
+                radius = int(entity.properties['radius'])
                 Character(
                     frames = self.overworld_frames['characters'][graphic],
                     pos = (entity.x, entity.y),
-                    groups = (self.all_sprites, self.collision_sprites),
-                    facing_direction = direction
+                    groups = (self.all_sprites, self.collision_sprites, self.character_sprites),
+                    facing_direction = direction,
+                    character_data=TRAINER_DATA[data],
+                    player=self.player,
+                    create_dialog=self.create_dialog,
+                    collision_sprites=self.collision_sprites,
+                    radius=radius
                 )
+
+    def input(self):
+        keys = pygame.key.get_just_pressed()
+
+        if not self.dialog_tree:
+            if keys[pygame.K_SPACE]:
+                for character in self.character_sprites:
+                    if check_connection(100, self.player, character):
+                        self.player.block()
+                        character.change_facing_direction(self.player.rect.center)
+                        self.create_dialog(character)
+
+    def create_dialog(self, character):
+        if not self.dialog_tree:
+            self.dialog_tree = DialogTree(character, self.player, self.all_sprites, self.fonts['dialog'], self.end_dialog)
+
+    def end_dialog(self):
+        self.dialog_tree = None
+        self.player.unblock()
 
     def run(self):
         while self.running:
@@ -89,9 +124,14 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.running = False
 
+            self.input()
             self.all_sprites.update(delta_time)
             self.display_surface.fill((0, 0, 0))
             self.all_sprites.draw(self.player.rect.center)
+
+            if self.dialog_tree:
+                self.dialog_tree.update()
+
             pygame.display.flip()
 
         pygame.quit()
