@@ -1,0 +1,16 @@
+minimum_pre_commit_version: "3.6.0"
+
+default_language_version:
+  python: python3.12
+
+files: ^code/.*\.py$
+
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.7
+    hooks:
+      - id: ruff
+        args: [--fix]
+        name: Ruff linter
+      - id: ruff-format
+        name: Ruff formatter

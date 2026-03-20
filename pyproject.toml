@@ -1,0 +1,64 @@
+[project]
+name = "pokemon-game"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Andrew Fomin",email = "andrfom1234567810@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12,<3.15"
+dependencies = [
+    "pygame-ce (>=2.5.7,<3.0.0)",
+    "pytmx (>=3.32,<4.0)",
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.3.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "nuitka (>=4.0.6,<5.0.0)",
+    "pyinstaller (>=6.19.0,<7.0.0)",
+    "ruff (>=0.15.7,<0.16.0)",
+    "pre-commit (>=4.5.1,<5.0.0)"
+]
+
+[tool.ruff]
+indent-width = 4
+line-length = 88
+src = ["code"]
+extend-exclude = [
+    ".venv",
+    "venv",
+    "__pycache__"
+]
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "W",
+    "F",
+    "I",
+    "B",
+    "UP",
+    "C4",
+    "RUF",
+    "PTH",
+    "ICN",
+    "A",
+    "N",
+    "BLE"
+]
+ignore = [
+    "E501",
+    "C408",
+    "RUF001",
+    "RUF002",
+    "RUF003",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"

@@ -1,5 +1,7 @@
-from settings import *
-from timer import Timer
+from code.settings.settings import COLORS, WORLD_LAYERS
+from code.timer import Timer
+
+import pygame
 
 
 class DialogTree:
@@ -14,7 +16,9 @@ class DialogTree:
         self.dialog_number = len(self.dialog)
         self.dialog_index = 0
 
-        self.current_dialog = DialogSprite(self.dialog[self.dialog_index], character, all_sprites, font)
+        self.current_dialog = DialogSprite(
+            self.dialog[self.dialog_index], character, all_sprites, font
+        )
 
         self.dialog_timer = Timer(500, autostart=True)
 
@@ -26,7 +30,12 @@ class DialogTree:
             self.dialog_index += 1
 
             if self.dialog_index < self.dialog_number:
-                self.current_dialog = DialogSprite(self.dialog[self.dialog_index], self.character, self.all_sprites, self.font)
+                self.current_dialog = DialogSprite(
+                    self.dialog[self.dialog_index],
+                    self.character,
+                    self.all_sprites,
+                    self.font,
+                )
                 self.dialog_timer.activate()
             else:
                 self.end_dialog()
@@ -40,18 +49,23 @@ class DialogSprite(pygame.sprite.Sprite):
     def __init__(self, message, character, groups, font):
         super().__init__(groups)
 
-        self.z = WORLD_LAYERS['top']
+        self.z = WORLD_LAYERS["top"]
 
-        text_surf = font.render(message, False, COLORS['black'])
+        text_surf = font.render(message, False, COLORS["black"])
         padding_x, padding_y = 8, 5
-        width, height = max(text_surf.get_width() + padding_x * 2, 30), text_surf.get_height() + padding_y * 2
+        width, height = (
+            max(text_surf.get_width() + padding_x * 2, 30),
+            text_surf.get_height() + padding_y * 2,
+        )
 
         surf = pygame.Surface((width, height), pygame.SRCALPHA)
         surf.fill((0, 0, 0, 0))
-        pygame.draw.rect(surf, COLORS['pure white'], surf.get_frect(topleft=(0, 0)), 0, 5)
+        pygame.draw.rect(
+            surf, COLORS["pure white"], surf.get_frect(topleft=(0, 0)), 0, 5
+        )
         surf.blit(text_surf, text_surf.get_frect(center=(width / 2, height / 2)))
 
         self.image = surf
-        self.rect = self.image.get_frect(midbottom = character.rect.midtop + pygame.Vector2(0, -10))
-
-
+        self.rect = self.image.get_frect(
+            midbottom=character.rect.midtop + pygame.Vector2(0, -10)
+        )
