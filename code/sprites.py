@@ -20,6 +20,14 @@ class BorderSprite(Sprite):
         self.hitbox = self.rect.copy()
 
 
+class TransitionSprite(Sprite):
+    def __init__(self, pos, size, target, groups):
+        surf = pygame.Surface(size)
+        super().__init__(surf, pos, groups)
+
+        self.target = target
+
+
 class CollideableSprite(Sprite):
     def __init__(self, surf, pos, groups):
         super().__init__(surf, pos, groups)

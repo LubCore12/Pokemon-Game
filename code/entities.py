@@ -156,7 +156,7 @@ class Character(Entity):
 
     def raycast(self):
         if (
-            check_connection(self.radius, self, self.player, tolerance=5)
+            check_connection(self.radius, self, self.player, tolerance=10)
             and self.has_los()
             and not self.has_moved
             and not self.has_noticed

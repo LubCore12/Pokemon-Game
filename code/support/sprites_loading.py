@@ -1,6 +1,7 @@
 from code.settings.paths import BASE_DIR
 
 import pygame
+from pytmx import load_pygame
 
 from .assets_loading import import_image
 
@@ -70,3 +71,15 @@ def coast_importer(cols, rows, *path):
             ]
 
     return new_dict
+
+
+def tmx_importer(*path):
+    tmx_dict = {}
+
+    for folder_path, _, file_names in BASE_DIR.joinpath(*path).walk():
+        for file in file_names:
+            tmx_dict[file.split(".")[0]] = load_pygame(
+                BASE_DIR.joinpath(folder_path, file)
+            )
+
+    return tmx_dict
