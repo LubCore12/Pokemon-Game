@@ -39,6 +39,8 @@ class DialogTree:
                 self.dialog_timer.activate()
             else:
                 self.end_dialog()
+                self.character.can_rotate = True
+                self.character.has_noticed = False
 
     def update(self):
         self.dialog_timer.update()

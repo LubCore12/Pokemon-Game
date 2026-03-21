@@ -92,24 +92,6 @@ files = [
 ]
 
 [[package]]
-name = "nuitka"
-version = "4.0.6"
-description = "Python compiler with full language support and CPython compatibility"
-optional = false
-python-versions = "*"
-groups = ["dev"]
-files = [
-    {file = "nuitka-4.0.6.tar.gz", hash = "sha256:9c14827058faf27414b6d28f5a27ef709fd6aa9b5f04af20e01b42889ac25b5c"},
-]
-
-[package.extras]
-all = ["imageio", "setuptools (>=42)", "toml", "zstandard (>=0.15)"]
-app = ["zstandard (>=0.15)"]
-build-wheel = ["setuptools (>=42)", "toml", "wheel"]
-icon-conversion = ["imageio"]
-onefile = ["zstandard (>=0.15)"]
-
-[[package]]
 name = "packaging"
 version = "26.0"
 description = "Core utilities for Python packages"
@@ -467,4 +449,4 @@ python-discovery = ">=1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.15"
-content-hash = "72e754003fed3c0bb6a35f37fdf5813cddaf9bb91efa9912389430248e33a780"
+content-hash = "d8ee362c51e85a22c1b47eafd327f3689f2e2252c038d62dc682e358c1cc5ab9"

@@ -1,5 +1,7 @@
 from code.settings.settings import ANIMATION_SPEED, WORLD_LAYERS
 from code.support.game_utils import check_connection
+from code.timer import Timer
+from random import choice, randint
 
 import pygame
 
@@ -56,6 +58,7 @@ class Player(Entity):
         super().__init__(frames, pos, groups, facing_direction)
 
         self.collision_sprites = collision_sprites
+        self.noticed = False
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -135,6 +138,17 @@ class Character(Entity):
         self.radius = radius
         self.view_directions = character_data["directions"]
 
+        self.timers = {
+            "look around": Timer(
+                randint(2000, 5000), autostart=True, func=self.look_around, repeat=True
+            ),
+            "notice": Timer(500, func=self.start_move),
+        }
+
+    def look_around(self):
+        if self.can_rotate:
+            self.state = choice(self.view_directions)
+
     def get_dialog(self):
         return self.character_data["dialog"][
             f"{'defeated' if self.character_data['defeated'] else 'default'}"
@@ -142,13 +156,17 @@ class Character(Entity):
 
     def raycast(self):
         if (
-            check_connection(self.radius, self, self.player)
+            check_connection(self.radius, self, self.player, tolerance=5)
             and self.has_los()
             and not self.has_moved
+            and not self.has_noticed
         ):
             self.player.block()
             self.player.change_facing_direction(self.rect.center)
-            self.start_move()
+            self.timers["notice"].activate()
+            self.can_rotate = False
+            self.has_noticed = True
+            self.player.noticed = True
 
     def has_los(self):
         if (
@@ -176,8 +194,12 @@ class Character(Entity):
                 self.direction = pygame.Vector2(0, 0)
                 self.has_moved = True
                 self.create_dialog(self)
+                self.player.noticed = False
 
     def update(self, delta_time):
+        for timer in self.timers.values():
+            timer.update()
         self.animate(delta_time)
-        self.raycast()
-        self.move(delta_time)
+        if self.character_data["look_around"]:
+            self.raycast()
+            self.move(delta_time)
