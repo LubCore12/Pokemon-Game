@@ -83,3 +83,19 @@ def tmx_importer(*path):
             )
 
     return tmx_dict
+
+
+def monster_importer(cols, rows, *path):
+    monster_dict = {}
+
+    for _, __, image_names in BASE_DIR.joinpath(*path).walk():
+        for image in image_names:
+            image_name = image.split(".")[0]
+            monster_dict[image_name] = {}
+            frame_dict = import_tilemap(cols, rows, *path, image)
+            for row, key in enumerate(("idle", "attack")):
+                monster_dict[image_name][key] = [
+                    frame_dict[(col, row)] for col in range(cols)
+                ]
+
+    return monster_dict

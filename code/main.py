@@ -2,6 +2,8 @@ from code.data.trainer import TRAINER_DATA
 from code.dialog import DialogTree
 from code.entities import Character, Player
 from code.groups import AllSprites
+from code.monster import Monster
+from code.monster_index import MonsterIndex
 from code.settings.paths import BASE_DIR
 from code.settings.settings import TILE_SIZE, WINDOW_HEIGHT, WINDOW_WIDTH, WORLD_LAYERS
 from code.sprites import (
@@ -12,11 +14,12 @@ from code.sprites import (
     Sprite,
     TransitionSprite,
 )
-from code.support.assets_loading import import_folder
+from code.support.assets_loading import import_folder, import_folder_dict
 from code.support.game_utils import check_connection
 from code.support.sprites_loading import (
     all_character_import,
     coast_importer,
+    monster_importer,
     tmx_importer,
 )
 
@@ -31,6 +34,17 @@ class Game:
         pygame.display.set_caption("Pokemon Game")
         self.running = True
         self.clock = pygame.time.Clock()
+
+        self.player_monsters = {
+            0: Monster("Charmadillo", 30),
+            1: Monster("Friolera", 29),
+            2: Monster("Larvea", 3),
+            3: Monster("Atrox", 24),
+            4: Monster("Sparchu", 24),
+            5: Monster("Gulfin", 24),
+            6: Monster("Jacana", 2),
+            7: Monster("Pouch", 3),
+        }
 
         self.all_sprites = AllSprites()
         self.collision_sprites = pygame.sprite.Group()
@@ -50,6 +64,11 @@ class Game:
 
         self.dialog_tree = None
 
+        self.monster_index = MonsterIndex(
+            self.player_monsters, self.fonts, self.monster_frames
+        )
+        self.index_open = False
+
     def import_assets(self):
         self.tmx_maps = tmx_importer("data", "maps")
 
@@ -59,9 +78,24 @@ class Game:
             "characters": all_character_import("graphics", "characters"),
         }
 
+        self.monster_frames = {
+            "icons": import_folder_dict("graphics", "icons"),
+            "monsters": monster_importer(4, 2, "graphics", "monsters"),
+            "ui": import_folder_dict("graphics", "ui"),
+        }
+
         self.fonts = {
             "dialog": pygame.font.Font(
                 BASE_DIR.joinpath("graphics", "fonts", "PixeloidSans.ttf"), 30
+            ),
+            "regular": pygame.font.Font(
+                BASE_DIR.joinpath("graphics", "fonts", "PixeloidSans.ttf"), 18
+            ),
+            "small": pygame.font.Font(
+                BASE_DIR.joinpath("graphics", "fonts", "PixeloidSans.ttf"), 14
+            ),
+            "bold": pygame.font.Font(
+                BASE_DIR.joinpath("graphics", "fonts", "dogicapixelbold.otf"), 20
             ),
         }
 
@@ -177,6 +211,10 @@ class Game:
                         self.create_dialog(character)
                         character.can_rotate = False
 
+            if keys[pygame.K_e]:
+                self.index_open = not self.index_open
+                self.player.blocked = not self.player.blocked
+
     def create_dialog(self, character):
         if not self.dialog_tree:
             self.dialog_tree = DialogTree(
@@ -237,6 +275,8 @@ class Game:
 
             if self.dialog_tree:
                 self.dialog_tree.update()
+            if self.index_open:
+                self.monster_index.update(delta_time)
 
             self.tint_screen(delta_time)
             pygame.display.flip()

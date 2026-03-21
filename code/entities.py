@@ -62,6 +62,7 @@ class Player(Entity):
 
     def input(self):
         keys = pygame.key.get_pressed()
+        state = self.get_state()
 
         self.direction.x = keys[pygame.K_d] - keys[pygame.K_a]
         self.direction.y = keys[pygame.K_s] - keys[pygame.K_w]
@@ -70,11 +71,7 @@ class Player(Entity):
             self.direction.normalize() if self.direction else self.direction
         )
 
-        if (
-            not int(self.frame_index)
-            and self.direction
-            and self.state.endswith("_idle")
-        ):
+        if self.direction and self.frame_index < 1 and state.endswith("_idle"):
             self.frame_index = 1
 
     def move(self, delta_time):
@@ -108,6 +105,8 @@ class Player(Entity):
         if not self.blocked:
             self.input()
             self.move(delta_time)
+        else:
+            self.frame_index = 0
         self.animate(delta_time)
 
 
