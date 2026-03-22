@@ -1,3 +1,4 @@
+from code.battle import Battle
 from code.data.trainer import TRAINER_DATA
 from code.dialog import DialogTree
 from code.entities import Character, Player
@@ -46,6 +47,14 @@ class Game:
             7: Monster("Pouch", 3),
         }
 
+        self.dummy_monsters = {
+            0: Monster("Atrox", 12),
+            1: Monster("Sparchu", 15),
+            2: Monster("Gulfin", 19),
+            3: Monster("Jacana", 2),
+            4: Monster("Pouch", 3),
+        }
+
         self.all_sprites = AllSprites()
         self.collision_sprites = pygame.sprite.Group()
         self.character_sprites = pygame.sprite.Group()
@@ -68,6 +77,15 @@ class Game:
             self.player_monsters, self.fonts, self.monster_frames
         )
         self.index_open = False
+
+        self.battle = Battle(
+            self.player,
+            self.player_monsters,
+            self.dummy_monsters,
+            self.monster_frames,
+            self.bg_frames["forest"],
+            self.fonts,
+        )
 
     def import_assets(self):
         self.tmx_maps = tmx_importer("data", "maps")
@@ -98,6 +116,8 @@ class Game:
                 BASE_DIR.joinpath("graphics", "fonts", "dogicapixelbold.otf"), 20
             ),
         }
+
+        self.bg_frames = import_folder_dict("graphics", "backgrounds")
 
     def setup(self, tmx_map, player_start_pos):
         for group in (
@@ -202,7 +222,7 @@ class Game:
     def input(self):
         keys = pygame.key.get_just_pressed()
 
-        if not self.dialog_tree:
+        if not self.dialog_tree and not self.battle:
             if keys[pygame.K_SPACE]:
                 for character in self.character_sprites:
                     if check_connection(100, self.player, character):
@@ -277,6 +297,9 @@ class Game:
                 self.dialog_tree.update()
             if self.index_open:
                 self.monster_index.update(delta_time)
+            if self.battle:
+                self.battle.update(delta_time)
+                self.player.block()
 
             self.tint_screen(delta_time)
             pygame.display.flip()
