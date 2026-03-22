@@ -16,7 +16,7 @@ from code.sprites import (
     TransitionSprite,
 )
 from code.support.assets_loading import import_folder, import_folder_dict
-from code.support.game_utils import check_connection
+from code.support.game_utils import check_connection, outline_creator
 from code.support.sprites_loading import (
     all_character_import,
     coast_importer,
@@ -101,6 +101,10 @@ class Game:
             "monsters": monster_importer(4, 2, "graphics", "monsters"),
             "ui": import_folder_dict("graphics", "ui"),
         }
+
+        self.monster_frames["outlines"] = outline_creator(
+            self.monster_frames["monsters"], 4
+        )
 
         self.fonts = {
             "dialog": pygame.font.Font(

@@ -20,6 +20,7 @@ COLORS = {
     "red": "#f03131",
     "blue": "#66d7ee",
     "normal": "#ffffff",
+    "dark white": "#f0f0f0",
 }
 
 WORLD_LAYERS = {"water": 0, "bg": 1, "coast": 2, "shadow": 3, "main": 4, "top": 5}

@@ -1,5 +1,10 @@
 from code.entities import Entity
-from code.settings.settings import WINDOW_HEIGHT, WINDOW_WIDTH, WORLD_LAYERS
+from code.settings.settings import (
+    BATTLE_LAYERS,
+    WINDOW_HEIGHT,
+    WINDOW_WIDTH,
+    WORLD_LAYERS,
+)
 from code.support.assets_loading import import_image
 
 import pygame
@@ -49,6 +54,10 @@ class BattleSprites(pygame.sprite.Group):
         super().__init__()
         self.display_surface = pygame.display.get_surface()
 
-    def draw(self):
+    def draw(self, current_monster_sprite):
         for sprite in sorted(self, key=lambda sprite: sprite.z):
-            self.display_surface.blit(sprite.image, sprite.rect)
+            if sprite.z == BATTLE_LAYERS["outline"]:
+                if sprite.monster_sprite == current_monster_sprite:
+                    self.display_surface.blit(sprite.image, sprite.rect)
+            else:
+                self.display_surface.blit(sprite.image, sprite.rect)
