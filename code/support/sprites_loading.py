@@ -99,3 +99,16 @@ def monster_importer(cols, rows, *path):
                 ]
 
     return monster_dict
+
+
+def attack_importer(*path):
+    attack_dict = {}
+
+    for folder_path, _, file_names in BASE_DIR.joinpath(*path).walk():
+        for image in file_names:
+            image_name = image.split(".")[0]
+            attack_dict[image_name] = list(
+                import_tilemap(4, 1, folder_path, image).values()
+            )
+
+    return attack_dict

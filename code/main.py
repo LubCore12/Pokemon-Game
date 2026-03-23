@@ -19,6 +19,7 @@ from code.support.assets_loading import import_folder, import_folder_dict
 from code.support.game_utils import check_connection, outline_creator
 from code.support.sprites_loading import (
     all_character_import,
+    attack_importer,
     coast_importer,
     monster_importer,
     tmx_importer,
@@ -48,9 +49,9 @@ class Game:
         }
 
         self.dummy_monsters = {
-            0: Monster("Atrox", 12),
-            1: Monster("Sparchu", 15),
-            2: Monster("Gulfin", 19),
+            0: Monster("Atrox", 50),
+            1: Monster("Sparchu", 2),
+            2: Monster("Gulfin", 6),
             3: Monster("Jacana", 2),
             4: Monster("Pouch", 3),
         }
@@ -100,6 +101,7 @@ class Game:
             "icons": import_folder_dict("graphics", "icons"),
             "monsters": monster_importer(4, 2, "graphics", "monsters"),
             "ui": import_folder_dict("graphics", "ui"),
+            "attacks": attack_importer("graphics", "attacks"),
         }
 
         self.monster_frames["outlines"] = outline_creator(
