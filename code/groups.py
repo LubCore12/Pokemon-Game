@@ -5,7 +5,7 @@ from code.settings.settings import (
     WINDOW_WIDTH,
     WORLD_LAYERS,
 )
-from code.support.assets_loading import import_image
+from code.support.files_importing import import_image
 
 import pygame
 

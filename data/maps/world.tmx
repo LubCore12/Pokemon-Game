@@ -183,8 +183,8 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="3" name="Entities" visible="0">
-  <object id="12" name="Player" x="4378.61" y="3953.38">
+ <objectgroup id="3" name="Entities">
+  <object id="12" name="Player" x="4259.94" y="3800.05">
    <properties>
     <property name="direction" value="down"/>
     <property name="pos" value="house"/>
@@ -1715,7 +1715,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="6" name="Monsters" visible="0">
+ <objectgroup id="6" name="Monsters">
   <object id="34" gid="242" x="4096" y="4096" width="64" height="64">
    <properties>
     <property name="biome" value="forest"/>

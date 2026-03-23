@@ -13,7 +13,9 @@ class Monster:
         self.initiative = 0
         self.abilities = MONSTER_DATA[name]["abilities"]
         self.paused = False
+        self.killed = False
         self.defending = False
+        self.evolution = MONSTER_DATA[self.name]["evolve"]
 
         self.xp = 0
         self.level_up = self.level * 150
@@ -68,5 +70,5 @@ class Monster:
             self.level_up = self.level * 150
 
     def update(self, delta_time):
-        if not self.paused:
+        if not self.paused and not self.killed:
             self.initiative += self.get_stat("speed") * delta_time

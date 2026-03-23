@@ -3,7 +3,7 @@ from code.settings.paths import BASE_DIR
 import pygame
 from pytmx import load_pygame
 
-from .assets_loading import import_image
+from .files_importing import import_image
 
 
 def import_tilemap(cols, rows, *path):
@@ -112,3 +112,17 @@ def attack_importer(*path):
             )
 
     return attack_dict
+
+
+def audio_importer(path):
+    files = {}
+
+    for folder_path, _, file_names in BASE_DIR.joinpath(path).walk():
+        for file in file_names:
+            full_path = BASE_DIR.joinpath(folder_path, file)
+            name = file.split(".")[0]
+            sound = pygame.mixer.Sound(full_path)
+            sound.set_volume(0.1)
+            files[name] = sound
+
+    return files

@@ -40,7 +40,7 @@ class CollideableSprite(Sprite):
 
 
 class MonsterPatchSprite(Sprite):
-    def __init__(self, surf, pos, groups, patch_type):
+    def __init__(self, surf, pos, groups, patch_type, monsters, level):
         super().__init__(
             surf,
             pos,
@@ -48,6 +48,9 @@ class MonsterPatchSprite(Sprite):
             WORLD_LAYERS["main"] if patch_type != "sand" else WORLD_LAYERS["bg"],
         )
         self.y_sort = self.rect.centery - 35
+        self.biome = patch_type
+        self.monsters = monsters
+        self.level = level
 
 
 class AnimatedSprite(Sprite):

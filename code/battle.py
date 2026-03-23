@@ -19,7 +19,15 @@ import pygame
 
 class Battle:
     def __init__(
-        self, player, player_monsters, opponent_monsters, monster_frames, bg_surf, fonts
+        self,
+        player_monsters,
+        opponent_monsters,
+        monster_frames,
+        bg_surf,
+        fonts,
+        end_battle,
+        character,
+        sounds,
     ):
         self.display_surface = pygame.display.get_surface()
         self.bg_surf = bg_surf
@@ -30,6 +38,9 @@ class Battle:
             "opponent": opponent_monsters,
         }
         self.battle_over = False
+        self.end_battle = end_battle
+        self.character = character
+        self.sounds = sounds
 
         self.timers = {"opponent delay": Timer(600, func=self.opponent_attack)}
 
@@ -62,6 +73,7 @@ class Battle:
                 del self.monster_data["opponent"][i]
 
     def create_monster(self, monster, index, pos_index, entity):
+        monster.paused = False
         frames = self.monster_frames["monsters"][monster.name].copy()
         outline_frames = self.monster_frames["outlines"][monster.name].copy()
 
@@ -162,12 +174,12 @@ class Battle:
 
             if keys[pygame.K_DOWN]:
                 self.indexes[self.selection_mode] = (
-                    self.indexes[self.selection_mode] + 1
-                ) % limiter
+                    (self.indexes[self.selection_mode] + 1) % limiter if limiter else 0
+                )
             if keys[pygame.K_UP]:
                 self.indexes[self.selection_mode] = (
-                    self.indexes[self.selection_mode] - 1
-                ) % limiter
+                    (self.indexes[self.selection_mode] - 1) % limiter if limiter else 0
+                )
             if keys[pygame.K_SPACE]:
                 just_switched = False
 
@@ -215,7 +227,7 @@ class Battle:
                     else:
                         if (
                             monster_sprite.monster.health
-                            < monster_sprite.monster.get_stat("max_health") * 0.9
+                            < monster_sprite.monster.get_stat("max_health") * 0.1
                         ):
                             self.monster_data["player"][
                                 len(self.monster_data["player"])
@@ -292,6 +304,7 @@ class Battle:
             target_sprite.rect.center,
             self.battle_sprites,
         )
+        self.sounds[ATTACK_DATA[attack]["animation"]].play()
 
         attack_element = ATTACK_DATA[attack]["element"]
         target_element = target_sprite.monster.element
@@ -312,10 +325,9 @@ class Battle:
 
         target_defense = 1 - target_sprite.monster.get_stat("defense") / 2000
         if target_sprite.monster.defending:
-            target_defense -= 2
-        target_defense = max(0, min(1, target_defense))
-
-        target_sprite.monster.health -= int(amount * target_defense)
+            target_sprite.monster.health -= int(amount * target_defense)
+        else:
+            target_sprite.monster.health -= int(amount)
 
         self.check_death()
 
@@ -382,13 +394,14 @@ class Battle:
                     for player_sprite in self.player_sprites.sprites():
                         player_sprite.monster.update_xp(xp_amount)
 
-                self.indexes["target"] = None
+                monster_sprite.monster.killed = True
                 monster_sprite.delayed_kill(new_monster_data)
 
     def check_end_battle(self):
         if len(self.opponent_sprites) == 0 and not self.battle_over:
             self.battle_over = True
-            print("battle won")
+            self.end_battle(self.character)
+            self.update_all_monsters("pause")
             for monster in self.monster_data["player"].values():
                 monster.initiative = 0
 
@@ -583,7 +596,6 @@ class Battle:
                 )
 
     def update(self, delta_time):
-        self.check_end_battle()
         self.input()
         self.update_timers()
         self.battle_sprites.update(delta_time)
@@ -599,3 +611,4 @@ class Battle:
             self.opponent_sprites,
         )
         self.draw_ui()
+        self.check_end_battle()

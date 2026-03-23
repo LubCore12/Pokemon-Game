@@ -232,7 +232,7 @@ ATTACK_DATA = {
     },
     "battlecry": {
         "target": "player",
-        "amount": 1.4,
+        "amount": -1.4,
         "cost": 20,
         "element": "normal",
         "animation": "green",

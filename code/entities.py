@@ -1,3 +1,4 @@
+from code.monster import Monster
 from code.settings.settings import ANIMATION_SPEED, WORLD_LAYERS
 from code.support.game_utils import check_connection
 from code.timer import Timer
@@ -122,6 +123,8 @@ class Character(Entity):
         create_dialog,
         collision_sprites,
         radius,
+        nurse,
+        notice_sound,
     ):
         super().__init__(frames, pos, groups, facing_direction)
         self.character_data = character_data
@@ -130,6 +133,16 @@ class Character(Entity):
         self.collision_rects = [
             sprite.rect for sprite in collision_sprites if sprite is not self
         ]
+        self.nurse = nurse
+        self.monsters = (
+            {
+                i: Monster(name, level)
+                for i, (name, level) in character_data["monsters"].items()
+            }
+            if "monsters" in character_data
+            else None
+        )
+        self.notice_sound = notice_sound
 
         self.has_moved = False
         self.can_rotate = True
@@ -166,6 +179,7 @@ class Character(Entity):
             self.can_rotate = False
             self.has_noticed = True
             self.player.noticed = True
+            self.notice_sound.play()
 
     def has_los(self):
         if (
